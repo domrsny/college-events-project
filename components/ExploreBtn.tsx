@@ -1,6 +1,6 @@
 'use client';
 
-import {Image} from "next/dist/client/image-component";
+import Image from "next/image";
 import posthog from 'posthog-js';
 
 const ExploreBtn = () => {
