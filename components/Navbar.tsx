@@ -1,7 +1,7 @@
 'use client';
 
-import Link from "next/dist/client/link";
-import {Image} from "next/dist/client/image-component";
+import Link from "next/link";
+import Image from "next/image";
 import posthog from 'posthog-js';
 
 const Navbar = () => {
