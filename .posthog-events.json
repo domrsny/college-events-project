@@ -1,0 +1,32 @@
+[
+  {
+    "event_name": "event_card_clicked",
+    "description": "User clicks on an event card to view event details - key conversion funnel entry point",
+    "file_path": "components/EventCard.tsx"
+  },
+  {
+    "event_name": "explore_events_clicked",
+    "description": "User clicks the Explore Events button in the homepage hero section",
+    "file_path": "components/ExploreBtn.tsx"
+  },
+  {
+    "event_name": "logo_clicked",
+    "description": "User clicks on the logo in the navbar to navigate home",
+    "file_path": "components/Navbar.tsx"
+  },
+  {
+    "event_name": "nav_home_clicked",
+    "description": "User clicks Home link in navbar navigation",
+    "file_path": "components/Navbar.tsx"
+  },
+  {
+    "event_name": "nav_events_clicked",
+    "description": "User clicks Events link in navbar navigation",
+    "file_path": "components/Navbar.tsx"
+  },
+  {
+    "event_name": "nav_create_event_clicked",
+    "description": "User clicks Create Event link in navbar - important engagement metric",
+    "file_path": "components/Navbar.tsx"
+  }
+]
