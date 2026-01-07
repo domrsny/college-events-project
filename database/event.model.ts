@@ -18,6 +18,8 @@ export interface IEvent extends Document {
   agenda: string[];
   organizer: string;
   tags: string[];
+  isDemo?: boolean;
+  sessionId?: string;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -38,11 +40,17 @@ const eventSchema = new Schema<IEvent>(
     agenda: { type: [String], required: [true, 'Agenda is required'] },
     organizer: { type: String, required: [true, 'Organizer is required'] },
     tags: { type: [String], required: [true, 'Tags are required'] },
+    isDemo: { type: Boolean, default: false },
+    sessionId: { type: String, index: true },
+    createdAt: { type: Date, default: Date.now },
   },
   {
     timestamps: true,
   }
 );
+
+// TTL index for demo data - expires after 24 hours
+eventSchema.index({ createdAt: 1 }, { expireAfterSeconds: 86400, partialFilterExpression: { isDemo: true } });
 
 /**
  * Pre-save hook for slug generation, date normalization, and validation.

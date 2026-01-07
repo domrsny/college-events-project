@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import DBconnect from "@/lib/mongodb";
 import Event from "@/database/event.model";
+import { isDemoMode } from "@/lib/demo-utils";
 
 /**
  * GET API route to fetch event details by slug.
@@ -26,11 +27,14 @@ export async function GET(
       );
     }
 
+    const sessionId = req.cookies.get('demo-session-id')?.value;
+    const isDemoActive = isDemoMode(req.cookies);
+
     // Connect to the database
-    await DBconnect();
+    await DBconnect(isDemoActive);
 
     // Query the database for the event with the matching slug
-    const event = await Event.findOne({ slug });
+    const event = await Event.findOne({ slug }).lean();
 
     // If no event is found, return 404
     if (!event) {
@@ -40,11 +44,27 @@ export async function GET(
       );
     }
 
+    // Security check for demo mode: if it's a demo event, it must belong to current session
+    if (isDemoActive && (event as any).isDemo && (event as any).sessionId !== sessionId) {
+      return NextResponse.json(
+        { message: "Access denied to this demo event" },
+        { status: 403 }
+      );
+    }
+
+    // Convert _id and dates to string to ensure safe serialization
+    const serializedEvent = {
+      ...event,
+      _id: (event as any)._id.toString(),
+      createdAt: (event as any).createdAt?.toISOString(),
+      updatedAt: (event as any).updatedAt?.toISOString(),
+    };
+
     // Return the found event
     return NextResponse.json(
       {
         message: "Event fetched successfully",
-        event,
+        event: serializedEvent,
       },
       { status: 200 }
     );

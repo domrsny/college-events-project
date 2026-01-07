@@ -1,25 +1,12 @@
 import ExploreBtn from "@/components/ExploreBtn";
 import EventCard from "@/components/EventCard";
 import {IEvent} from "@/database/event.model";
-import {cacheLife} from "next/cache";
+import { getAllEvents } from "@/lib/actions/event.actions";
 
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
+export const dynamic = 'force-dynamic';
 
 const Page = async () => {
-    'use cache';
-cacheLife('minutes')
-    let events = [];
-    try {
-        const response = await fetch(`${BASE_URL}/api/events`);
-        if (!response.ok) {
-            console.error('Failed to fetch events:', response.status);
-        } else {
-            const data = await response.json();
-            events = data.events ?? [];
-        }
-    } catch (error) {
-        console.error('Error fetching events:', error);
-    }
+    const events = await getAllEvents();
 
     return (
         <section>

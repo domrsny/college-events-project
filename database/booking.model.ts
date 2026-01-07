@@ -6,6 +6,8 @@ import mongoose, { Schema, Document, Model, Types } from 'mongoose';
 export interface IBooking extends Document {
   eventId: Types.ObjectId;
   email: string;
+  isDemo?: boolean;
+  sessionId?: string;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -25,11 +27,17 @@ const bookingSchema = new Schema<IBooking>(
       trim: true,
       match: [/^\S+@\S+\.\S+$/, 'Please provide a valid email address'],
     },
+    isDemo: { type: Boolean, default: false },
+    sessionId: { type: String, index: true },
+    createdAt: { type: Date, default: Date.now },
   },
   {
     timestamps: true,
   }
 );
+
+// TTL index for demo data - expires after 24 hours
+bookingSchema.index({ createdAt: 1 }, { expireAfterSeconds: 86400, partialFilterExpression: { isDemo: true } });
 
 /**
  * Pre-save hook to verify that the referenced Event exists.
