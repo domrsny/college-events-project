@@ -29,8 +29,8 @@ const Navbar = () => {
                 </Link>
 
                 <ul>
-                    <Link href='/' onClick={() => handleNavClick('home')}>Home</Link>
-                    <Link href='/events/create' onClick={() => handleNavClick('create_event')}>Create Event</Link>
+                    <li><Link href='/' onClick={() => handleNavClick('home')}>Home</Link></li>
+                    <li><Link href='/events/create' onClick={() => handleNavClick('create_event')}>Create Event</Link></li>
                     <li><DemoToggle /></li>
                 </ul>
             </nav>

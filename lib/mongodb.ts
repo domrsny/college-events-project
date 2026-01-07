@@ -43,20 +43,36 @@ async function connectDB(useDemo: boolean = false): Promise<typeof mongoose> {
     );
   }
 
-  // If already connected, check if it's the right host
-  if (mongoose.connection.readyState >= 1) {
-    const currentHost = new URL(currentURI).host;
-    const connectedHost = mongoose.connection.host;
-    
-    if (connectedHost && currentHost.includes(connectedHost)) {
-      return mongoose;
-    }
-    
-    // Different host, disconnect first
-    await mongoose.disconnect();
+  const cache = useDemo ? cachedDemo : cached;
+
+  if (cache.conn) {
+    return cache.conn;
   }
 
-  return mongoose.connect(currentURI, { bufferCommands: false });
+  if (!cache.promise) {
+    const opts = {
+      bufferCommands: false,
+    };
+
+    cache.promise = mongoose.connect(currentURI, opts).then((mongoose) => {
+      return mongoose;
+    });
+  }
+
+  try {
+    cache.conn = await cache.promise;
+  } catch (e) {
+    cache.promise = null;
+    throw e;
+  }
+
+  if (useDemo) {
+    global.mongooseDemo = cache;
+  } else {
+    global.mongoose = cache;
+  }
+
+  return cache.conn;
 }
 
 export default connectDB;

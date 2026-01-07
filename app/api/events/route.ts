@@ -89,7 +89,7 @@ export async function GET(req: NextRequest) {
         // Filter: Global events (isDemo: false) OR current user's demo events
         const query = isDemoActive 
             ? { $or: [{ isDemo: false }, { sessionId: sessionId }] }
-            : {};
+            : { isDemo: false };
 
         const events = await Event.find(query).sort({ createdAt: -1 }).lean();
 

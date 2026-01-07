@@ -45,7 +45,7 @@ export async function GET(
     }
 
     // Security check for demo mode: if it's a demo event, it must belong to current session
-    if (isDemoActive && (event as any).isDemo && (event as any).sessionId !== sessionId) {
+    if ((event as any).isDemo && (!isDemoActive || (event as any).sessionId !== sessionId)) {
       return NextResponse.json(
         { message: "Access denied to this demo event" },
         { status: 403 }
