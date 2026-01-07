@@ -86,9 +86,9 @@ export async function GET(req: NextRequest) {
 
         await DBconnect(isDemoActive);
 
-        // Filter: Global events (isDemo: false) OR current user's demo events
+        // Filter: Global events (isDemo: false) OR permanent demo events OR current user's demo events
         const query = isDemoActive 
-            ? { $or: [{ isDemo: false }, { sessionId: sessionId }] }
+            ? { $or: [{ isDemo: false }, { isPermanent: true }, { sessionId: sessionId }] }
             : { isDemo: false };
 
         const events = await Event.find(query).sort({ createdAt: -1 }).lean();

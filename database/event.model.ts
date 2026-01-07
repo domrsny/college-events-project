@@ -19,6 +19,7 @@ export interface IEvent extends Document {
   organizer: string;
   tags: string[];
   isDemo?: boolean;
+  isPermanent?: boolean;
   sessionId?: string;
   createdAt: Date;
   updatedAt: Date;
@@ -41,6 +42,7 @@ const eventSchema = new Schema<IEvent>(
     organizer: { type: String, required: [true, 'Organizer is required'] },
     tags: { type: [String], required: [true, 'Tags are required'] },
     isDemo: { type: Boolean, default: false },
+    isPermanent: { type: Boolean, default: false },
     sessionId: { type: String, index: true },
     createdAt: { type: Date, default: Date.now },
   },
@@ -50,7 +52,7 @@ const eventSchema = new Schema<IEvent>(
 );
 
 // TTL index for demo data - expires after 24 hours
-eventSchema.index({ createdAt: 1 }, { expireAfterSeconds: 86400, partialFilterExpression: { isDemo: true } });
+eventSchema.index({ createdAt: 1 }, { expireAfterSeconds: 86400, partialFilterExpression: { isDemo: true, isPermanent: false } });
 
 /**
  * Pre-save hook for slug generation, date normalization, and validation.
