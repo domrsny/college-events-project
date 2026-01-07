@@ -17,11 +17,11 @@ export const getSimilarEventsBySlug = async (slug: string) => {
 
         if(!event) return [];
 
-        // Filter: Global events (isDemo: false) OR current user's demo events
+        // Filter: Global events (isDemo: false) OR permanent demo events OR current user's demo events
         const query = {
             _id: { $ne: event._id },
             tags: { $in: event.tags },
-            ...(isDemoActive ? { $or: [{ isDemo: false }, { sessionId: sessionId }] } : {})
+            ...(isDemoActive ? { $or: [{ isDemo: false }, { isPermanent: true }, { sessionId: sessionId }] } : {})
         };
 
         const events = await Event.find(query).limit(3).lean();
@@ -45,9 +45,9 @@ export const getAllEvents = async () => {
 
         await DBconnect(isDemoActive);
 
-        // Filter: Global events (isDemo: false) OR current user's demo events
+        // Filter: Global events (isDemo: false) OR permanent demo events OR current user's demo events
         const query = isDemoActive 
-            ? { $or: [{ isDemo: false }, { sessionId: sessionId }] }
+            ? { $or: [{ isDemo: false }, { isPermanent: true }, { sessionId: sessionId }] }
             : {};
 
         const events = await Event.find(query).sort({ createdAt: -1 }).lean();
@@ -76,8 +76,8 @@ export const getEventBySlug = async (slug: string) => {
 
         if (!event) return null;
 
-        // Security check for demo mode: if it's a demo event, it must belong to current session
-        if (isDemoActive && (event as any).isDemo && (event as any).sessionId !== sessionId) {
+        // Security check for demo mode: if it's a demo event, it must belong to current session or be permanent
+        if (isDemoActive && (event as any).isDemo && !(event as any).isPermanent && (event as any).sessionId !== sessionId) {
             return null;
         }
 
