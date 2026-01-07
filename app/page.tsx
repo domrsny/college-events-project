@@ -1,4 +1,3 @@
-import ExploreBtn from "@/components/ExploreBtn";
 import EventCard from "@/components/EventCard";
 import {IEvent} from "@/database/event.model";
 import { getAllEvents } from "@/lib/actions/event.actions";
@@ -12,8 +11,6 @@ const Page = async () => {
         <section>
             <h1 className="text-center">The Hub for Every Student <br /> Event You Can't Miss</h1>
             <p className="text-center mt-5">Socials, Festivals, Game Nights, and More, All in One Place</p>
-
-            <ExploreBtn />
 
             <div className="mt-20 space-y-7">
                 <h3>Featured Events</h3>
