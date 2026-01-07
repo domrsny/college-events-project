@@ -3,11 +3,15 @@ import {v2 as cloudinary} from 'cloudinary';
 
 import DBconnect from "@/lib/mongodb"
 import Event from "@/database/event.model";
+import { isDemoMode } from "@/lib/demo-utils";
 
 
 export async function POST(req: NextRequest) {
     try {
-        await DBconnect();
+        const sessionId = req.cookies.get('demo-session-id')?.value;
+        const isDemo = isDemoMode(req.cookies);
+
+        await DBconnect(isDemo);
 
         const formData = await req.formData();
 
@@ -64,6 +68,8 @@ export async function POST(req: NextRequest) {
             ...event,
             tags: tags,
             agenda: agenda,
+            isDemo: isDemo,
+            sessionId: isDemo ? sessionId : undefined,
         })
 
         return NextResponse.json({ message: 'Event created successfully', event: createdEvent }, { status: 201 })
@@ -73,13 +79,28 @@ export async function POST(req: NextRequest) {
     }
 }
 
-export async function GET() {
+export async function GET(req: NextRequest) {
     try {
-        await DBconnect();
+        const sessionId = req.cookies.get('demo-session-id')?.value;
+        const isDemoActive = isDemoMode(req.cookies);
 
-        const events = await Event.find().sort({ createdAt: -1 });
+        await DBconnect(isDemoActive);
 
-        return NextResponse.json({ message: 'Events fetched successfully', events }, { status: 200 });
+        // Filter: Global events (isDemo: false) OR current user's demo events
+        const query = isDemoActive 
+            ? { $or: [{ isDemo: false }, { sessionId: sessionId }] }
+            : { isDemo: false };
+
+        const events = await Event.find(query).sort({ createdAt: -1 }).lean();
+
+        const serializedEvents = events.map((event: any) => ({
+            ...event,
+            _id: event._id.toString(),
+            createdAt: event.createdAt?.toISOString(),
+            updatedAt: event.updatedAt?.toISOString(),
+        }));
+
+        return NextResponse.json({ message: 'Events fetched successfully', events: serializedEvents }, { status: 200 });
     } catch (e) {
         console.error('Error fetching events:', e);
         return NextResponse.json({ message: 'Event fetching failed', error: e instanceof Error ? e.message : 'Unknown error'}, { status: 500 })

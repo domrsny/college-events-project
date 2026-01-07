@@ -27,10 +27,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${schibstedGrotesk.variable} ${martianMono.variable} min-h-screen antialiased`}
+        className={`${schibstedGrotesk.variable} ${martianMono.variable} min-h-screen antialiased relative`}
       >
       <Navbar />
-        <div className="absolute inset-0 top-0 z-[-1] min-h-screen">
+        <div className="absolute inset-0 z-[-1] h-full">
           <LightRays
               raysOrigin="top-center-offset"
               raysColor="#5dfeca"

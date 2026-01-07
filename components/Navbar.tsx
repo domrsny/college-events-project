@@ -3,6 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import posthog from 'posthog-js';
+import DemoToggle from "./DemoToggle";
 
 const Navbar = () => {
     const handleLogoClick = () => {
@@ -28,9 +29,9 @@ const Navbar = () => {
                 </Link>
 
                 <ul>
-                    <Link href='/' onClick={() => handleNavClick('home')}>Home</Link>
-                    <Link href='/' onClick={() => handleNavClick('events')}>Events</Link>
-                    <Link href='/' onClick={() => handleNavClick('create_event')}>Create Event</Link>
+                    <li><Link href='/' onClick={() => handleNavClick('home')}>Home</Link></li>
+                    <li><Link href='/events/create' onClick={() => handleNavClick('create_event')}>Create Event</Link></li>
+                    <li><DemoToggle /></li>
                 </ul>
             </nav>
         </header>
