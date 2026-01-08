@@ -8,17 +8,17 @@ interface Props {
     title: string;
     image: string;
     slug: string;
-    location: string;
+    venue: string;
     date: string;
     time: string;
 }
 
-const EventCard = ({ title, image, slug, location, date, time}: Props) => {
+const EventCard = ({ title, image, slug, venue, date, time}: Props) => {
     const handleClick = () => {
         posthog.capture('event_card_clicked', {
             event_title: title,
             event_slug: slug,
-            event_location: location,
+            event_venue: venue,
             event_date: date,
             event_time: time,
         });
@@ -30,7 +30,7 @@ const EventCard = ({ title, image, slug, location, date, time}: Props) => {
 
             <div className="flex flex-row gap-2">
                 <Image src="/icons/pin.svg" alt="location" width={14} height={14} />
-                <p>{location}</p>
+                <p>{venue}</p>
             </div>
 
             <p className="title">{title}</p>
