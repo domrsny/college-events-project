@@ -45,7 +45,9 @@ const EventDetailsPage = async ({ params }: { params: Promise<{ slug: string}>})
     }
 
 
-    const { title, description, image, overview, date, time, location, mode, agenda, audience, tags, organizer } = event;
+    const { title, description, image, overview, date, time, venue, location, mode, agenda, audience, tags, organizer } = event;
+
+    const venueLocation: string = `${venue} - ${location}`
 
     if(!description) return notFound()
 
@@ -74,7 +76,7 @@ const EventDetailsPage = async ({ params }: { params: Promise<{ slug: string}>})
 
                     <EventDetailItem icon={"/icons/calendar.svg"} alt="calendar" label={date} />
                     <EventDetailItem icon={"/icons/clock.svg"} alt="clock" label={time} />
-                    <EventDetailItem icon={"/icons/pin.svg"} alt="pin" label={location} />
+                    <EventDetailItem icon={"/icons/pin.svg"} alt="pin" label={venueLocation} />
                     <EventDetailItem icon={"/icons/mode.svg"} alt="mode" label={mode} />
                     <EventDetailItem icon={"/icons/audience.svg"} alt="audience" label={audience} />
                 </section>
@@ -82,7 +84,7 @@ const EventDetailsPage = async ({ params }: { params: Promise<{ slug: string}>})
                     <EventAgenda agendaItems={agenda} />
 
                     <section className="flex-col-gap-2">
-                        <h2>About the Organizer</h2>
+                        <h2>Organizer</h2>
                         <p>{organizer}</p>
                     </section>
 
