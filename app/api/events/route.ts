@@ -69,6 +69,7 @@ export async function POST(req: NextRequest) {
             tags: tags,
             agenda: agenda,
             isDemo: isDemo,
+            isPermanent: isDemo ? true : false,
             sessionId: isDemo ? sessionId : undefined,
         })
 
