@@ -51,8 +51,6 @@ const eventSchema = new Schema<IEvent>(
   }
 );
 
-// TTL index for demo data - expires after 24 hours
-eventSchema.index({ createdAt: 1 }, { expireAfterSeconds: 86400, partialFilterExpression: { isDemo: true, isPermanent: { $ne: true } } });
 
 /**
  * Pre-save hook for slug generation, date normalization, and validation.
