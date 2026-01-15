@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
 import connectDB from '@/lib/mongodb';
-import Event from '@/database/event.model';
 
 export async function POST(req: NextRequest) {
   try {
@@ -11,9 +10,6 @@ export async function POST(req: NextRequest) {
     }
 
     await connectDB(true);
-
-    // Clear existing demo events (except permanent ones)
-    await Event.deleteMany({ isDemo: true, isPermanent: { $ne: true } });
 
     return NextResponse.json({ message: 'Demo database cleared successfully' }, { status: 200 });
   } catch (error) {
