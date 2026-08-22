@@ -36,9 +36,6 @@ const bookingSchema = new Schema<IBooking>(
   }
 );
 
-// TTL index for demo data - expires after 24 hours
-bookingSchema.index({ createdAt: 1 }, { expireAfterSeconds: 86400, partialFilterExpression: { isDemo: true } });
-
 /**
  * Pre-save hook to verify that the referenced Event exists.
  */
