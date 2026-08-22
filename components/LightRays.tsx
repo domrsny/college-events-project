@@ -185,24 +185,35 @@ float rayStrength(vec2 raySource, vec2 rayRefDirection, vec2 coord,
                   float seedA, float seedB, float speed) {
   vec2 sourceToCoord = coord - raySource;
   vec2 dirNorm = normalize(sourceToCoord);
-  float cosAngle = dot(dirNorm, rayRefDirection);
-
-  float distortedAngle = cosAngle + distortion * sin(iTime * 2.0 + length(sourceToCoord) * 0.01) * 0.2;
   
-  float spreadFactor = pow(max(distortedAngle, 0.0), 1.0 / max(lightSpread, 0.001));
+  vec2 perpDir = vec2(-rayRefDirection.y, rayRefDirection.x);
+  float cosAngle = clamp(dot(dirNorm, rayRefDirection), -1.0, 1.0);
+  float sinAngle = dot(dirNorm, perpDir);
+  float angle = atan(sinAngle, cosAngle);
+
+  float t = iTime * speed;
+  // Outward propagating ripple away from light source
+  float radialWave = sin(length(sourceToCoord) * 0.02 - t * 2.0);
+  float distortedAngle = angle + distortion * radialWave * 0.2;
+  
+  float spreadFactor = pow(max(cosAngle, 0.0), 1.0 / max(lightSpread, 0.001));
 
   float distance = length(sourceToCoord);
-  float maxDistance = iResolution.x * rayLength;
-  float lengthFalloff = clamp((maxDistance - distance) / maxDistance, 0.0, 1.0);
+  float maxDistance = max(iResolution.x, iResolution.y) * rayLength;
+  float lengthFalloff = smoothstep(maxDistance, 0.0, distance);
   
-  float fadeFalloff = clamp((iResolution.x * fadeDistance - distance) / (iResolution.x * fadeDistance), 0.5, 1.0);
-  float pulse = pulsating > 0.5 ? (0.8 + 0.2 * sin(iTime * speed * 3.0)) : 1.0;
+  float maxFade = max(iResolution.x, iResolution.y) * fadeDistance;
+  float fadeFalloff = smoothstep(maxFade * 1.5, 0.0, distance);
+  fadeFalloff = mix(0.4, 1.0, fadeFalloff);
+  
+  float pulse = pulsating > 0.5 ? (0.85 + 0.15 * sin(iTime * speed * 3.0)) : 1.0;
 
-  float baseStrength = clamp(
-    (0.45 + 0.15 * sin(distortedAngle * seedA + iTime * speed)) +
-    (0.3 + 0.2 * cos(-distortedAngle * seedB + iTime * speed)),
-    0.0, 1.0
-  );
+  // Harmonious shimmering light shafts
+  float ray1 = pow(0.5 + 0.5 * sin(distortedAngle * seedA + t * 0.4), 2.0);
+  float ray2 = pow(0.5 + 0.5 * cos(distortedAngle * seedB - t * 0.3), 2.0);
+  float ray3 = pow(0.5 + 0.5 * sin(distortedAngle * (seedA * 0.6) + t * 0.15), 1.5);
+
+  float baseStrength = ray1 * 0.45 + ray2 * 0.35 + ray3 * 0.2;
 
   return baseStrength * lengthFalloff * fadeFalloff * spreadFactor * pulse;
 }
@@ -210,11 +221,12 @@ float rayStrength(vec2 raySource, vec2 rayRefDirection, vec2 coord,
 void mainImage(out vec4 fragColor, in vec2 fragCoord) {
   vec2 coord = vec2(fragCoord.x, iResolution.y - fragCoord.y);
   
-  vec2 finalRayDir = rayDir;
+  vec2 normRayDir = normalize(rayDir);
+  vec2 finalRayDir = normRayDir;
   if (mouseInfluence > 0.0) {
     vec2 mouseScreenPos = mousePos * iResolution.xy;
     vec2 mouseDirection = normalize(mouseScreenPos - rayPos);
-    finalRayDir = normalize(mix(rayDir, mouseDirection, mouseInfluence));
+    finalRayDir = normalize(mix(normRayDir, mouseDirection, mouseInfluence));
   }
 
   vec4 rays1 = vec4(1.0) *
@@ -224,17 +236,16 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
                rayStrength(rayPos, finalRayDir, coord, 22.3991, 18.0234,
                            1.1 * raysSpeed);
 
-  fragColor = rays1 * 0.5 + rays2 * 0.4;
+  fragColor = rays1 * 0.55 + rays2 * 0.45;
 
   if (noiseAmount > 0.0) {
     float n = noise(coord * 0.01 + iTime * 0.1);
     fragColor.rgb *= (1.0 - noiseAmount + noiseAmount * n);
   }
 
-  float brightness = 1.0 - (coord.y / iResolution.y);
-  fragColor.x *= 0.1 + brightness * 0.8;
-  fragColor.y *= 0.3 + brightness * 0.6;
-  fragColor.z *= 0.5 + brightness * 0.5;
+  float distFromTop = coord.y / iResolution.y;
+  float atmosphericFade = clamp(1.0 - distFromTop * 0.4, 0.3, 1.0);
+  fragColor.rgb *= atmosphericFade;
 
   if (saturation != 1.0) {
     float gray = dot(fragColor.rgb, vec3(0.299, 0.587, 0.114));
@@ -331,6 +342,12 @@ void main() {
                 }
             };
 
+            const resizeObserver = new ResizeObserver(() => {
+                updatePlacement();
+            });
+            if (containerRef.current) {
+                resizeObserver.observe(containerRef.current);
+            }
             window.addEventListener("resize", updatePlacement);
             updatePlacement();
             animationIdRef.current = requestAnimationFrame(loop);
@@ -341,6 +358,7 @@ void main() {
                     animationIdRef.current = null;
                 }
 
+                resizeObserver.disconnect();
                 window.removeEventListener("resize", updatePlacement);
 
                 if (renderer) {
@@ -429,11 +447,15 @@ void main() {
 
     useEffect(() => {
         const handleMouseMove = (e: MouseEvent) => {
-            if (!containerRef.current || !rendererRef.current) return;
+            if (!containerRef.current) return;
             const rect = containerRef.current.getBoundingClientRect();
+            if (rect.width === 0 || rect.height === 0) return;
             const x = (e.clientX - rect.left) / rect.width;
             const y = (e.clientY - rect.top) / rect.height;
-            mouseRef.current = { x, y };
+            mouseRef.current = {
+                x: Math.max(0, Math.min(1, x)),
+                y: Math.max(0, Math.min(1, y)),
+            };
         };
 
         if (followMouse) {
