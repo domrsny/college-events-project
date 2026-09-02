@@ -6,15 +6,49 @@ This is a full-stack web app I built to centralize and display college events. T
 
 ---
 
+## Getting Started
+
+1. Install dependencies:
+
+   ```bash
+   npm install
+   ```
+
+2. Copy `.env.example` to `.env.local` and fill in the values:
+
+   ```bash
+   cp .env.example .env.local
+   ```
+
+   | Variable                                                                 | Description                                          |
+   | ------------------------------------------------------------------------ | ---------------------------------------------------- |
+   | `MONGODB_URI`                                                            | Connection string for the main MongoDB database      |
+   | `MONGODB_DEMO_URI`                                                       | Connection string for the demo MongoDB database      |
+   | `DEMO_ACCESS_CODE`                                                       | Code required to toggle demo mode or clear demo data |
+   | `NEXT_PUBLIC_DEMO_MODE`                                                  | Set to `true` to enable the public demo experience   |
+   | `CLOUDINARY_CLOUD_NAME` / `CLOUDINARY_API_KEY` / `CLOUDINARY_API_SECRET` | Cloudinary credentials, used for event image uploads |
+   | `NEXT_PUBLIC_POSTHOG_KEY` / `NEXT_PUBLIC_POSTHOG_HOST`                   | PostHog analytics credentials                        |
+
+3. Run the dev server:
+
+   ```bash
+   npm run dev
+   ```
+
+4. Other useful scripts: `npm run lint`, `npm run format`, `npm test`, `npm run build`.
+
+---
+
 ## Overview
 
 I built this project because I wanted to combine modern front-end and back-end skills into a real-world application. It gave me experience designing a scalable architecture, managing dynamic data, and deploying a live web application. The project is structured with maintainability and expandability in mind, and all of the components are modular so they can be reused in future projects.
 
-Key functionality includes:  
+Key functionality includes:
+
 - Browsing events and booking via email
-- Responsive UI that works seamlessly on desktop and mobile  
-- Modular component design for maintainability  
-- Live deployment for real-world testing and demonstration  
+- Responsive UI that works seamlessly on desktop and mobile
+- Modular component design for maintainability
+- Live deployment for real-world testing and demonstration
 
 ---
 
@@ -22,55 +56,61 @@ Key functionality includes:
 
 This project highlights a range of technical skills that are directly applicable to software development roles:
 
-**Front-End Development**  
-- Building reusable, modular components with React and TypeScript  
-- Implementing responsive, mobile-first design with CSS  
-- Managing state effectively for dynamic user interfaces  
+**Front-End Development**
 
-**Back-End / Data Handling**  
-- Connecting the front end to a database to handle real-time event data  
-- Structuring APIs to provide filtered and organized data  
-- Designing schemas and queries to optimize performance  
+- Building reusable, modular components with React and TypeScript
+- Implementing responsive, mobile-first design with CSS
+- Managing state effectively for dynamic user interfaces
 
-**Full-Stack / DevOps**  
-- Deploying a Next.js application to Vercel  
-- Managing environment variables and demo keys for secure deployments  
-- Debugging live applications and handling errors in production  
+**Back-End / Data Handling**
 
-**Software Engineering Practices**  
-- Writing clean, readable, and maintainable code  
-- Using TypeScript for type safety and reducing runtime errors  
-- Structuring a project for scalability and future feature expansion  
+- Connecting the front end to a database to handle real-time event data
+- Structuring APIs to provide filtered and organized data
+- Designing schemas and queries to optimize performance
 
-**Collaboration & Documentation**  
-- Documenting the project to make it easy for others to understand and contribute  
-- Writing clear README and code comments  
+**Full-Stack / DevOps**
+
+- Deploying a Next.js application to Vercel
+- Managing environment variables and demo keys for secure deployments
+- Debugging live applications and handling errors in production
+
+**Software Engineering Practices**
+
+- Writing clean, readable, and maintainable code
+- Using TypeScript for type safety and reducing runtime errors
+- Structuring a project for scalability and future feature expansion
+
+**Collaboration & Documentation**
+
+- Documenting the project to make it easy for others to understand and contribute
+- Writing clear README and code comments
 - Following consistent coding standards and best practices
 
 ---
 
 ## Tools Used
 
-- **Next.js** – React framework for building server-side rendered and static web applications  
-- **React** – Front-end library for building modular, component-based interfaces  
-- **TypeScript** – Superset of JavaScript for type safety and reducing runtime errors  
-- **CSS** – Styling the interface with responsive and mobile-first design  
-- **MongoDB** – NoSQL database for storing and querying event data  
-- **Mongoose** – ODM for MongoDB to model and interact with data  
-- **PostHog** – Analytics and event tracking to measure user engagement  
-- **Vercel** – Platform for deploying the web app live  
-- **ESLint & Prettier** – Tools for code formatting and maintaining consistent code style  
+- **Next.js** – React framework for building server-side rendered and static web applications
+- **React** – Front-end library for building modular, component-based interfaces
+- **TypeScript** – Superset of JavaScript for type safety and reducing runtime errors
+- **CSS** – Styling the interface with responsive and mobile-first design
+- **MongoDB** – NoSQL database for storing and querying event data
+- **Mongoose** – ODM for MongoDB to model and interact with data
+- **PostHog** – Analytics and event tracking to measure user engagement
+- **Vercel** – Platform for deploying the web app live
+- **ESLint & Prettier** – Tools for code formatting and maintaining consistent code style
 
 ---
 
 ## What I Learned
 
-Working on this project helped me improve skills that are highly relevant for professional software development:  
-- Component-based architecture and state management in React  
-- Best practices for TypeScript in a full-stack environment  
-- Responsive design and accessibility considerations  
-- Deployment and environment management for live web applications  
-- Planning and structuring projects for maintainability and scalability  
+Working on this project helped me improve skills that are highly relevant for professional software development:
+
+- Component-based architecture and state management in React
+- Best practices for TypeScript in a full-stack environment
+- Responsive design and accessibility considerations
+- Deployment and environment management for live web applications
+- Planning and structuring projects for maintainability and scalability
 
 ---
 

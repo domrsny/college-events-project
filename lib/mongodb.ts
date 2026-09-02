@@ -8,9 +8,7 @@ type MongooseCache = {
 
 // Extend the global object to include our mongoose cache for both main and demo DBs
 declare global {
-  // eslint-disable-next-line no-var
   var mongoose: MongooseCache | undefined;
-  // eslint-disable-next-line no-var
   var mongooseDemo: MongooseCache | undefined;
 }
 
@@ -18,8 +16,8 @@ const MONGODB_URI = process.env.MONGODB_URI;
 const MONGODB_DEMO_URI = process.env.MONGODB_DEMO_URI;
 
 // Initialize the caches on the global object to persist across hot reloads in development
-let cached: MongooseCache = global.mongoose || { conn: null, promise: null };
-let cachedDemo: MongooseCache = global.mongooseDemo || { conn: null, promise: null };
+const cached: MongooseCache = global.mongoose || { conn: null, promise: null };
+const cachedDemo: MongooseCache = global.mongooseDemo || { conn: null, promise: null };
 
 if (!global.mongoose) {
   global.mongoose = cached;
@@ -39,7 +37,7 @@ async function connectDB(useDemo: boolean = false): Promise<typeof mongoose> {
 
   if (!currentURI) {
     throw new Error(
-        `Please define the ${useDemo ? 'MONGODB_DEMO_URI' : 'MONGODB_URI'} environment variable inside .env.local`
+      `Please define the ${useDemo ? 'MONGODB_DEMO_URI' : 'MONGODB_URI'} environment variable inside .env.local`
     );
   }
 
