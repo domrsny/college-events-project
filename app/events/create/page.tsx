@@ -1,9 +1,7 @@
-import CreateEventForm from "@/components/CreateEventForm";
+import CreateEventForm from '@/components/CreateEventForm';
 
 const Page = () => {
-    return (
-        <CreateEventForm />
-    )
-}
+  return <CreateEventForm />;
+};
 
 export default Page;
