@@ -1,7 +1,9 @@
-import { ReadonlyRequestCookies } from "next/dist/server/web/spec-extension/adapters/request-cookies";
+type CookieReader = {
+  get(name: string): { value: string } | undefined;
+};
 
-export function isDemoMode(cookieStore: ReadonlyRequestCookies | any) {
-    const isOff = cookieStore.get('demo-mode-off')?.value === 'true';
-    const globalDemo = process.env.NEXT_PUBLIC_DEMO_MODE === 'true';
-    return globalDemo && !isOff;
+export function isDemoMode(cookieStore: CookieReader) {
+  const isOff = cookieStore.get('demo-mode-off')?.value === 'true';
+  const globalDemo = process.env.NEXT_PUBLIC_DEMO_MODE === 'true';
+  return globalDemo && !isOff;
 }

@@ -9,10 +9,10 @@ export function proxy(request: NextRequest) {
     let newSessionId;
     try {
       newSessionId = crypto.randomUUID();
-    } catch (e) {
+    } catch {
       newSessionId = Math.random().toString(36).substring(2, 15);
     }
-    
+
     const response = NextResponse.next();
     response.cookies.set('demo-session-id', newSessionId, {
       httpOnly: false, // Allow client-side access for analytics
