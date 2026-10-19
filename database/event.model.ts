@@ -1,5 +1,4 @@
 import mongoose, { Schema, Document, Model } from 'mongoose';
-import { slugify } from '@/lib/slugify';
 
 /**
  * Interface representing the Event document in MongoDB.
@@ -52,6 +51,7 @@ const eventSchema = new Schema<IEvent>(
   }
 );
 
+
 /**
  * Pre-save hook for slug generation, date normalization, and validation.
  */
@@ -59,7 +59,12 @@ eventSchema.pre('save', function () {
   const event = this as IEvent;
   // Generate slug from title if title is modified or slug is missing
   if (event.isModified('title') || !event.slug) {
-    event.slug = slugify(event.title);
+    event.slug = event.title
+      .toLowerCase()
+      .trim()
+      .replace(/[^\w\s-]/g, '')
+      .replace(/[\s_-]+/g, '-')
+      .replace(/^-+|-+$/g, '');
   }
 
   // Normalize date to ISO format if provided
