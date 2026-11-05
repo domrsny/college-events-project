@@ -76,6 +76,6 @@ Working on this project helped me improve skills that are highly relevant for pr
 
 ## Try it Out
 
-The live app is available here: [https://domrsny.dev](https://domrsny.dev). You can explore the interface, test filtering options, and see how the components interact with dynamic data.
+The live app is available here: [https://domrsny.com](https://domrsny.com). You can explore the interface, test filtering options, and see how the components interact with dynamic data.
 
 The source code is also available here on GitHub!
